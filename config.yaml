@@ -1,14 +1,13 @@
 options:
-  string-option:
+  locust_file:
     type: string
-    default: "Default Value"
-    description: "A short description of the configuration option"
-  boolean-option:
+    default: ""
+    description: "The locust_file to use, base64 encoded."
+  master:
     type: boolean
     default: False
-    description: "A short description of the configuration option"
-  int-option:
-    type: int
-    default: 9001
-    description: "A short description of the configuration option"
-
+    description: "Whether to run in master mode."
+  host:
+    type: string
+    default: ""
+    description: "The host to run the load test on."
