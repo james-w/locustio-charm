@@ -1,9 +1,8 @@
 - hosts: all
   vars:
     working_dir: /srv/locustio
-  handlers:
-    - name: Restart locust
-      service: name=locustio state=restarted
+  roles:
+    - { role: configured, when: master or master__private_address is defined }
   tasks:
     - name: Install required packages.
       apt: pkg={{ item }} state=latest update_cache=yes
@@ -30,26 +29,6 @@
       tags:
         - install
         - upgrade-charm
-
-    - name: Write locustfile
-      template: src=../templates/locust_file.py
-                dest={{ working_dir }}/locust_file.py
-      tags:
-        - config-changed
-        - master-relation-changed
-      when: master or master__private_address is defined
-      notify:
-        - Restart locust
-
-    - name: Write service file
-      template: src=../templates/locustio.init.conf
-                dest=/etc/init/locustio.conf
-      tags:
-        - config-changed
-        - master-relation-changed
-      when: master or master__private_address is defined
-      notify:
-        - Restart locust
 
     - name: Open port
       shell: open-port 8089
