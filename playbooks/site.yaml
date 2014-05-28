@@ -51,6 +51,11 @@
       notify:
         - Restart locust
 
+    - name: Open port
+      shell: open-port 8089
+      tags:
+        - install
+
     - name: No-op task for hooks without any tasks tagged.
       tags:
         - start
