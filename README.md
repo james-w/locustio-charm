@@ -1,72 +1,56 @@
-charm-bootstrap-ansible
-=======================
+locust.io
+=========
 
-A quick way to get started creating a [juju][1] charm using
-[ansible][2].
+Set up a distributed instance of [locust.io][1].
 
-Disclaimer: this template does not try to explain what's possible with
-either ansible or juju - but if you know a bit about both, it will
-show you how you can easily use them together.
+[1]: http://locust.io/
 
-Make sure you have both git and bzr installed and then:
+You need to first set up your config to run the instances.
 
-```
-$ mkdir -p charms/precise && cd charms/precise
-$ git clone https://github.com/absoludity/charm-bootstrap-ansible.git mycharm
-$ cd mycharm
-$ make
-```
+Create a file named `config.yaml` with contents like::
 
-That will pull in the required charm-helpers library and run the unit-tests.
-Take a look around at the hooks/hooks.py or the playbooks/site.yaml,
-or deploy it with:
+    locust-master:
+        master: true
+        host: http://url.prefix.to.test/
+        locust_file: |
+           # The contents of the locust_file.py to use.
+           # See http://docs.locust.io/en/latest/writing-a-locustfile.html
+    locust-slave:
+        master: false
+        locust_file: |
+           # The same locust_file as above.
 
-```
-$ juju deploy --repository=../.. local:charm-bootstrap-ansible
-```
+(Hopefully we'll be able to make specifying the `locust_file` in the slaves
+unnecesarry soon.)
 
-If you'd like to explore what's happening when the hooks run,
-once juju status tells you that the services has 'started', you can
-open another terminal up and run
+Now you need to deploy the charm twice and relate the master to
+the slaves:
 
-```
-$ juju debug-hooks charm-bootstrap-ansible/0
-```
+    juju deploy locustio locust-master --config config.yaml
+    juju deploy locustio locust-slave --config config.yaml
+    juju add-relation locust-master:slave locust-slave:master
+    juju expose locust-master
 
-Back in your original terminal, let's change one of the config
-options (defined in the config.yaml):
+Once the services has started you will be able to connect to port `8089` on
+the public address of the master unit and use the web interface.
 
-```
-$ juju set charm-bootstrap-ansible string-option="Hi there"
-```
+If you need to change the locust file, or the host that is being tested
+you can update the `config.yaml` then run
 
-Back in your debug-hooks terminal, you'll see the prompt
-has changed to let you know it's ready to run the config-changed
-hook. Run the hook to see what it does with:
+   juju set locust-master --config config.yaml
+   juju set locust-slave --config config.yaml
 
-```
-$ hooks/config-changed
-```
+If you need more slaves for your testing you can run
 
-You'll see the output of ansible running all the tasks tagged with
-'config-changed', including a debug message with the value of
-the config option that you changed. Just 'exit' to let juju know
-the hook execution has finished.
+  juju add-unit locust-slave
 
-Have fun exploring the possibilities of ansible and juju!
+and use the `-n` option to add multiple units at once if you wish.
 
-### Note about Dependencies
-The makefile to run tests requires the following dependencies
+Leader election
+---------------
 
-- python-nose
-- python-mock
-- python-flake8
+Deploying the charm twice and making one the leader in config
+would be unnecessary if the units could just elect a leader themselves.
 
-installable via: 
-
-```
-$ sudo apt-get install python-nose python-mock python-flake8
-```
-
-[1]: http://juju.ubuntu.com/
-[2]: http://ansibleworks.com/
+Once that is supported natively by juju then the charm could be made
+to use that.
