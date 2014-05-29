@@ -26,8 +26,9 @@ unnecesarry soon.)
 Now you need to deploy the charm twice and relate the master to
 the slaves:
 
-    juju deploy locustio locust-master --config config.yaml
-    juju deploy locustio locust-slave --config config.yaml
+    make sync-charm-helpers
+    juju deploy --repository .. local:locustio locust-master --config config.yaml
+    juju deploy --repository .. local:locustio locust-slave --config config.yaml
     juju add-relation locust-master:slave locust-slave:master
     juju expose locust-master
 
