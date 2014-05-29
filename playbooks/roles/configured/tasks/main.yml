@@ -1,18 +1,17 @@
-- tasks:
-    - name: Write locustfile
-      template: src=../templates/locust_file.py
-                dest={{ working_dir }}/locust_file.py
-      tags:
-        - config-changed
-        - master-relation-changed
-      notify:
-        - Restart locust
+- name: Write locustfile
+  template: src=../templates/locust_file.py
+            dest={{ working_dir }}/locust_file.py
+  tags:
+    - config-changed
+    - master-relation-changed
+  notify:
+    - Restart locust
 
-    - name: Write service file
-      template: src=../templates/locustio.init.conf
-                dest=/etc/init/locustio.conf
-      tags:
-        - config-changed
-        - master-relation-changed
-      notify:
-        - Restart locust
+- name: Write service file
+  template: src=../templates/locustio.init.conf
+            dest=/etc/init/locustio.conf
+  tags:
+    - config-changed
+    - master-relation-changed
+  notify:
+    - Restart locust

@@ -1,3 +1,2 @@
-- handlers:
-  - name: Restart locust
-    service: name=locustio state=restarted
+- name: Restart locust
+  service: name=locustio state=restarted
