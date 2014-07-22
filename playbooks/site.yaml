@@ -23,6 +23,19 @@
         - install
         - upgrade-charm
 
+    - name: Write user defined pip packages to charm_requirements.txt
+      copy: content={{ pip_packages }} dest={{ working_dir }}/charm_requirements.txt
+      tags:
+        - install
+        - upgrade-charm
+
+    - name: Install user defined pip packages
+      pip: requirements={{ working_dir }}/charm_requirements.txt
+           virtualenv={{ working_dir }}/env
+      tags:
+        - install
+        - upgrade-charm
+
     - name: Install locustio
       pip: name=locustio
            virtualenv={{ working_dir }}/env
