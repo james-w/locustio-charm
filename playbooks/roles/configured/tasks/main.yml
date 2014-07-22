@@ -1,5 +1,6 @@
 - name: Write user defined pip packages to charm_requirements.txt
-  copy: content={{ pip_packages }} dest={{ working_dir }}/charm_requirements.txt
+  copy: content={{ pip_packages }}
+        dest={{ working_dir }}/charm_requirements.txt
   tags:
     - config-changed
 
