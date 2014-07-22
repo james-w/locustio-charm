@@ -14,4 +14,4 @@ options:
   pip_packages:
     type: string
     default: ""
-    description: "A list of packages to install in the locust venv, in requiresments file format."
+    description: "A list of packages to install in the locust venv, in requirements file format."
