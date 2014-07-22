@@ -11,3 +11,7 @@ options:
     type: string
     default: ""
     description: "The host to run the load test on."
+  pip_packages:
+    type: string
+    default: ""
+    description: "A list of packages to install in the locust venv, in requirements file format."

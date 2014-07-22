@@ -1,3 +1,15 @@
+- name: Write user defined pip packages to charm_requirements.txt
+  copy: content={{ pip_packages }}
+        dest={{ working_dir }}/charm_requirements.txt
+  tags:
+    - config-changed
+
+- name: Install user defined pip packages
+  pip: requirements={{ working_dir }}/charm_requirements.txt
+       virtualenv={{ working_dir }}/env
+  tags:
+    - config-changed
+
 - name: Write locustfile
   template: src=../templates/locust_file.py
             dest={{ working_dir }}/locust_file.py
